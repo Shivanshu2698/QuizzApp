@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -62,6 +64,8 @@ public class QuizServiceImpl implements QuizService {
 
 	@Override
 	@Scheduled(fixedDelay = 60000) // Run every minute
+	@CachePut("activeQuizzes")
+	@CacheEvict(value = "activeQuizzes", allEntries = true)
 	public void updateQuizStatus() {
 	    List<Quiz> quizzes = quizRepository.findAll();
 	    LocalDateTime currentDate = LocalDateTime.now();
